@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      auto-index-creation: true
+
+logging:
+  level:
+    com.productservice: DEBUG
+    org.springframework.data.mongodb: DEBUG
+
+app:
+  seed: false
