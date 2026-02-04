@@ -261,6 +261,8 @@ Or via environment variable:
 APP_SEED_ENDPOINT_ENABLED=true ./gradlew bootRun
 ```
 
+Note: The `app.seed.enabled` property controls the legacy CommandLineRunner seeder (for Docker startup), while `app.seed.endpoint.enabled` controls the admin REST endpoint.
+
 ### Admin Seed Endpoints
 
 | Method | Endpoint | Description |
@@ -381,8 +383,8 @@ spring:
       database: productdb
 
 app:
-  seed: false
   seed:
+    enabled: false
     endpoint:
       enabled: false
     default-count: 1500
@@ -399,8 +401,8 @@ spring:
       database: productdb
 
 app:
-  seed: true
   seed:
+    enabled: true
     endpoint:
       enabled: true
     default-count: 1500

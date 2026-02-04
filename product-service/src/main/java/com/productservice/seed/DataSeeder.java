@@ -19,7 +19,7 @@ import java.util.Random;
 import java.util.UUID;
 
 @Component
-@ConditionalOnProperty(name = "app.seed", havingValue = "true")
+@ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true")
 @RequiredArgsConstructor
 @Slf4j
 public class DataSeeder implements CommandLineRunner {

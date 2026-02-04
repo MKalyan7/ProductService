@@ -35,8 +35,8 @@ logging:
     org.springframework.data.mongodb: INFO
 
 app:
-  seed: false
   seed:
+    enabled: false
     endpoint:
       enabled: false
     default-count: 1500
