@@ -36,3 +36,7 @@ logging:
 
 app:
   seed: false
+  seed:
+    endpoint:
+      enabled: false
+    default-count: 1500

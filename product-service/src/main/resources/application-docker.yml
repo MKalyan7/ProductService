@@ -7,3 +7,7 @@ spring:
 
 app:
   seed: true
+  seed:
+    endpoint:
+      enabled: true
+    default-count: 1500
