@@ -226,6 +226,125 @@ All requests include a correlation ID for tracing:
 }
 ```
 
+## Data Seeding
+
+The service includes a robust data generation feature for testing pagination, search, and filtering with realistic data.
+
+### Seed Data Overview
+
+The seeding feature generates:
+- 30 categories (Electronics, Kitchen, Clothing, etc.)
+- Configurable number of products (default: 1500)
+- Inventory records for every product
+
+Data characteristics:
+- Realistic product names using brand + adjective + product type combinations
+- Category-appropriate price ranges (e.g., Electronics: $50-$500, Grocery: $2-$15)
+- ~10% inactive products
+- ~10% out-of-stock, ~15% low-stock inventory distribution
+- Timestamps spread across the last 18 months
+
+### Enabling the Seed Endpoint
+
+The seed endpoint is disabled by default for security. Enable it by setting:
+
+```yaml
+app:
+  seed:
+    endpoint:
+      enabled: true
+    default-count: 1500
+```
+
+Or via environment variable:
+```bash
+APP_SEED_ENDPOINT_ENABLED=true ./gradlew bootRun
+```
+
+Note: The `app.seed.enabled` property controls the legacy CommandLineRunner seeder (for Docker startup), while `app.seed.endpoint.enabled` controls the admin REST endpoint.
+
+### Admin Seed Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/v1/admin/seed | Seed database with test data |
+| GET | /api/v1/admin/seed/status | Get current seed status |
+
+### Running the Seed Endpoint
+
+```bash
+curl -X POST "http://localhost:8081/api/v1/admin/seed?count=1500&seed=42&reset=true"
+```
+
+Parameters:
+- `count` - Number of products to generate (default: 1500)
+- `seed` - Random seed for deterministic generation (default: current timestamp)
+- `reset` - If true, clears existing data before seeding (default: false)
+
+### Check Seed Status
+
+```bash
+curl http://localhost:8081/api/v1/admin/seed/status
+```
+
+Response:
+```json
+{
+  "categoryCount": 30,
+  "productCount": 1500,
+  "inventoryCount": 1500,
+  "lastSeedRun": {
+    "lastSeedTime": "2024-01-15T10:30:00Z",
+    "seed": 42,
+    "productCount": 1500,
+    "categoryCount": 30,
+    "durationMs": 2500,
+    "status": "SUCCESS",
+    "message": "Seeded 30 categories, 1500 products, 1500 inventories"
+  }
+}
+```
+
+### Idempotency
+
+The seeding uses upsert operations based on SKU for products and categoryId for categories. This means:
+- Re-running with `reset=false` will skip if data exists
+- Re-running with `reset=true` will clear and reseed
+- Same seed value produces identical data (deterministic)
+
+### Performance
+
+Expected seeding times (approximate):
+- 500 products: ~1 second
+- 1500 products: ~2-3 seconds
+- 2000 products: ~3-4 seconds
+
+Bulk inserts use chunks of 300 documents to balance memory usage and performance.
+
+### Sample cURL Commands for Testing Seeded Data
+
+After seeding, test the APIs:
+
+```bash
+# List products with pagination (sorted by price descending)
+curl "http://localhost:8081/api/v1/products?page=0&size=20&sort=price&sortDir=desc"
+
+# Search products by name/description
+curl "http://localhost:8081/api/v1/products?q=wireless"
+
+# Filter by category and price range (replace <categoryId> with actual ID)
+curl "http://localhost:8081/api/v1/products?categoryId=<categoryId>&minPrice=50&maxPrice=200"
+
+# Get product by SKU
+curl "http://localhost:8081/api/v1/products/sku/ELEC-00001"
+
+# Check inventory for a product
+curl "http://localhost:8081/api/v1/inventory/<productId>"
+
+# List all categories
+curl "http://localhost:8081/api/v1/categories"
+```
+
 ## Running Tests
 
 ### All Tests
@@ -264,7 +383,11 @@ spring:
       database: productdb
 
 app:
-  seed: false
+  seed:
+    enabled: false
+    endpoint:
+      enabled: false
+    default-count: 1500
 ```
 
 ### application-docker.yml (Docker)
@@ -278,5 +401,9 @@ spring:
       database: productdb
 
 app:
-  seed: true
+  seed:
+    enabled: true
+    endpoint:
+      enabled: true
+    default-count: 1500
 ```

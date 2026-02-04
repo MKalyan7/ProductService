@@ -6,4 +6,8 @@ spring:
       database: productdb
 
 app:
-  seed: true
+  seed:
+    enabled: true
+    endpoint:
+      enabled: true
+    default-count: 1500
