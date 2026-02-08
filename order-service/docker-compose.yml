@@ -24,7 +24,7 @@ services:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATA_MONGODB_HOST=order-stack-product-mongodb
+      - SPRING_DATA_MONGODB_HOST=product-mongodb
     depends_on:
       product-mongodb:
         condition: service_healthy

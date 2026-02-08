@@ -7,4 +7,4 @@ spring:
 
 product:
   service:
-    base-url: http://order-stack-product-service:8081
+    base-url: http://product-service:8081
