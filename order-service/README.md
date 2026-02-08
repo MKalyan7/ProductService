@@ -69,6 +69,9 @@ These ports are chosen to avoid conflicts with the standalone product-service st
 | `product.service.base-url`        | `http://localhost:8081`    | Product service base URL         |
 | `product.service.connect-timeout-ms` | `3000`                  | WebClient connection timeout     |
 | `product.service.read-timeout-ms` | `5000`                     | WebClient read timeout           |
+| `app.seed.endpoint.enabled`       | `false`                    | Enable admin seed endpoints      |
+| `app.seed.default-count`          | `2000`                     | Default number of orders to seed |
+| `app.seed.reserve-inventory`      | `false`                    | Call product-service to reserve inventory during seeding |
 
 ## API Endpoints
 
@@ -130,6 +133,68 @@ curl -X POST http://localhost:8082/api/v1/orders/{orderId}/cancel \
 ```bash
 curl http://localhost:8082/actuator/health
 ```
+
+## Data Seeding
+
+The order-service includes an admin endpoint for generating realistic test orders using real products from product-service.
+
+### Prerequisites
+- product-service must be running and seeded with products
+- Enable the seed endpoint: set `app.seed.endpoint.enabled=true` in `application.yml` or via env var
+
+### Enable Seed Endpoint
+
+```yaml
+app:
+  seed:
+    endpoint:
+      enabled: true
+```
+
+Or via environment variable:
+```bash
+APP_SEED_ENDPOINT_ENABLED=true ./gradlew bootRun
+```
+
+### Seed Orders
+
+```bash
+curl -X POST "http://localhost:8082/api/v1/admin/seed/orders?count=2000&seed=42&reset=true&reserveInventory=false"
+```
+
+Parameters:
+| Parameter          | Default | Description                                                      |
+|--------------------|---------|------------------------------------------------------------------|
+| `count`            | 2000    | Number of orders to generate (clamped to 500-3000)               |
+| `seed`             | current time | Random seed for deterministic generation                    |
+| `reset`            | false   | If true, deletes existing seeded orders before re-seeding        |
+| `reserveInventory` | false   | If true, calls product-service reserve endpoint for each item    |
+
+### Check Seed Status
+
+```bash
+curl http://localhost:8082/api/v1/admin/seed/status
+```
+
+### Verify Seeded Data
+
+```bash
+# List orders for a seeded customer
+curl "http://localhost:8082/api/v1/orders?customerId=CUST-1050&page=0&size=10&sort=createdAt,desc"
+
+# Get a specific order (use an orderId from the list response)
+curl http://localhost:8082/api/v1/orders/{orderId}
+```
+
+### Seeding Design
+- Fetches active products from product-service via `GET /api/v1/products?active=true` (paginated)
+- Generates ~200 customers (CUST-1001 to CUST-1200)
+- Each order has 1-5 items with random quantities 1-4
+- Unit prices come from product-service (not invented)
+- `createdAt` spread over the last 6 months
+- Status distribution: ~70% CONFIRMED, ~20% CREATED, ~10% CANCELLED
+- Orders are tagged with `dataTag: "seed-v1"` for idempotent reset
+- Inventory reservation is configurable (`reserveInventory` param); if enabled and a reserve fails, it retries up to 3 times with a different product
 
 ## Order Lifecycle
 
