@@ -1,0 +1,41 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: order-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: orderdb
+      auto-index-creation: true
+
+product:
+  service:
+    base-url: http://localhost:8081
+    connect-timeout-ms: 3000
+    read-timeout-ms: 5000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{correlationId}] %-5level %logger{36} - %msg%n"
+  level:
+    com.orderservice: INFO
+    org.springframework.data.mongodb: INFO
