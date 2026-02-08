@@ -1,0 +1,12 @@
+package com.orderservice.exception;
+
+public enum ErrorCode {
+    VALIDATION_ERROR,
+    ORDER_NOT_FOUND,
+    INVALID_ORDER_STATE,
+    PRODUCT_SERVICE_UNAVAILABLE,
+    PRODUCT_NOT_FOUND,
+    PRODUCT_INACTIVE,
+    OUT_OF_STOCK,
+    INTERNAL_ERROR
+}

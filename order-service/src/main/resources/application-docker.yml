@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      database: orderdb
+
+product:
+  service:
+    base-url: http://product-service:8081
