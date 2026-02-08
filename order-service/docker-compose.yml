@@ -1,5 +1,5 @@
 services:
-  mongo:
+  order-mongodb:
     image: mongo:7.0
     container_name: order-mongodb
     ports:
@@ -19,12 +19,12 @@ services:
     build:
       context: ../product-service
       dockerfile: Dockerfile
-    container_name: product-service
+    container_name: order-stack-product-service
     ports:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_DATA_MONGODB_HOST=product-mongodb
+      - SPRING_DATA_MONGODB_HOST=order-stack-product-mongodb
     depends_on:
       product-mongodb:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
 
   product-mongodb:
     image: mongo:7.0
-    container_name: product-mongodb
+    container_name: order-stack-product-mongodb
     ports:
       - "27017:27017"
     volumes:
@@ -57,7 +57,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      mongo:
+      order-mongodb:
         condition: service_healthy
       product-service:
         condition: service_started
