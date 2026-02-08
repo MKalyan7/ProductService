@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: order-stack-product-service
     ports:
-      - "8081:8081"
+      - "8083:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATA_MONGODB_HOST=product-mongodb
@@ -35,7 +35,7 @@ services:
     image: mongo:7.0
     container_name: order-stack-product-mongodb
     ports:
-      - "27017:27017"
+      - "27019:27017"
     volumes:
       - product_mongodb_data:/data/db
     networks:
