@@ -45,13 +45,18 @@ docker compose down
 docker compose down -v
 ```
 
-### Exposed Ports
-| Service          | Port |
-|------------------|------|
-| product-service  | 8081 |
-| order-service    | 8082 |
-| product-mongodb  | 27017 |
-| order-mongodb    | 27018 |
+### Exposed Ports (order-service stack)
+
+These ports are chosen to avoid conflicts with the standalone product-service stack, allowing both to run simultaneously.
+
+| Service                      | Host Port | Container Port | Notes                                    |
+|------------------------------|-----------|----------------|------------------------------------------|
+| order-service                | 8082      | 8082           |                                          |
+| product-service (order stack)| 8083      | 8081           | Different host port to avoid conflict    |
+| order-mongodb                | 27018     | 27017          |                                          |
+| product-mongodb (order stack)| 27019     | 27017          | Different host port to avoid conflict    |
+
+> **Note:** The product-service standalone stack uses ports `8081` and `27017`. The order-service stack maps its copies to `8083` and `27019` on the host so both stacks can run at the same time. Inside the Docker network, services communicate on their container ports (e.g. `product-service:8081`).
 
 ## Configuration
 
