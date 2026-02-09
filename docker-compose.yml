@@ -20,7 +20,7 @@ services:
       context: ./product-service
       dockerfile: Dockerfile
     container_name: product-service
-    command: ["java", "-jar", "app.jar", "--spring.profiles.active=docker", "--spring.data.mongodb.host=mongodb"]
+    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=docker", "--spring.data.mongodb.host=mongodb"]
     # Expose during dev; in production remove this block and route through api-gateway only
     ports:
       - "8081:8081"
@@ -35,7 +35,7 @@ services:
       context: ./order-service
       dockerfile: Dockerfile
     container_name: order-service
-    command: ["java", "-jar", "app.jar", "--spring.profiles.active=docker", "--spring.data.mongodb.host=mongodb"]
+    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=docker", "--spring.data.mongodb.host=mongodb"]
     # Expose during dev; in production remove this block and route through api-gateway only
     ports:
       - "8082:8082"
