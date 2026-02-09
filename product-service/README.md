@@ -2,6 +2,8 @@
 
 A complete Product Service microservice built with Spring Boot 3.x, MongoDB, and comprehensive REST APIs for managing products, categories, and inventory.
 
+<!-- Dummy change for testing PR workflow -->
+
 ## Tech Stack
 
 - Java 17
