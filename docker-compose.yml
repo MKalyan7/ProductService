@@ -25,6 +25,7 @@ services:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_HOST=mongodb
     depends_on:
       mongodb:
         condition: service_healthy
@@ -41,6 +42,7 @@ services:
       - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_HOST=mongodb
     depends_on:
       mongodb:
         condition: service_healthy
