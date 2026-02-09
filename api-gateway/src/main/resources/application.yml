@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 10s
+      routes:
+        - id: product-service-products
+          uri: ${product.service.base-url}
+          predicates:
+            - Path=/api/v1/products/**
+        - id: product-service-categories
+          uri: ${product.service.base-url}
+          predicates:
+            - Path=/api/v1/categories/**
+        - id: product-service-inventory
+          uri: ${product.service.base-url}
+          predicates:
+            - Path=/api/v1/inventory/**
+        - id: order-service-orders
+          uri: ${order.service.base-url}
+          predicates:
+            - Path=/api/v1/orders/**
+        - id: admin-routes
+          uri: ${product.service.base-url}
+          predicates:
+            - Path=/api/v1/admin/**
+          filters:
+            - AdminAuth
+
+product:
+  service:
+    base-url: http://localhost:8081
+
+order:
+  service:
+    base-url: http://localhost:8082
+
+app:
+  admin:
+    token: ""
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{correlationId}] %-5level %logger{36} - %msg%n"
+  level:
+    com.apigateway: DEBUG
+    org.springframework.cloud.gateway: INFO

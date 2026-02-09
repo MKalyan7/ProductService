@@ -1,0 +1,11 @@
+product:
+  service:
+    base-url: http://product-service:8081
+
+order:
+  service:
+    base-url: http://order-service:8082
+
+app:
+  admin:
+    token: ${ADMIN_TOKEN:changeme}
