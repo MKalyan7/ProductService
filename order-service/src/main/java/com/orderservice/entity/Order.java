@@ -45,4 +45,7 @@ public class Order {
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    @Indexed
+    private String dataTag;
 }

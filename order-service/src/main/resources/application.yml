@@ -33,6 +33,13 @@ springdoc:
     path: /swagger-ui.html
     enabled: true
 
+app:
+  seed:
+    endpoint:
+      enabled: false
+    default-count: 2000
+    reserve-inventory: false
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{correlationId}] %-5level %logger{36} - %msg%n"

@@ -56,6 +56,7 @@ services:
       - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - APP_SEED_ENDPOINT_ENABLED=true
     depends_on:
       order-mongodb:
         condition: service_healthy

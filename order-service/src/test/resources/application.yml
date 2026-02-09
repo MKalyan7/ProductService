@@ -9,6 +9,13 @@ product:
     connect-timeout-ms: 3000
     read-timeout-ms: 5000
 
+app:
+  seed:
+    endpoint:
+      enabled: true
+    default-count: 50
+    reserve-inventory: false
+
 logging:
   level:
     com.orderservice: DEBUG
