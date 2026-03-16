@@ -6,6 +6,10 @@ order:
   service:
     base-url: http://order-service:8082
 
+payment:
+  service:
+    base-url: http://payment-service:8083
+
 app:
   admin:
     token: ${ADMIN_TOKEN:changeme}
