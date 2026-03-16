@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: payment-service-test
+
+logging:
+  level:
+    com.paymentservice: DEBUG

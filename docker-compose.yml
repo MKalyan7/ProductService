@@ -47,6 +47,21 @@ services:
     networks:
       - app-network
 
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=docker", "--spring.data.mongodb.host=mongodb"]
+    # Expose during dev; in production remove this block and route through api-gateway only
+    ports:
+      - "8083:8083"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - app-network
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -61,6 +76,8 @@ services:
       product-service:
         condition: service_started
       order-service:
+        condition: service_started
+      payment-service:
         condition: service_started
     networks:
       - app-network

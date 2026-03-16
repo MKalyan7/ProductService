@@ -26,10 +26,26 @@ spring:
           uri: ${order.service.base-url}
           predicates:
             - Path=/api/v1/orders/**
-        - id: admin-routes
+        - id: payment-service-payments
+          uri: ${payment.service.base-url}
+          predicates:
+            - Path=/api/v1/payments/**
+        - id: admin-product-routes
           uri: ${product.service.base-url}
           predicates:
-            - Path=/api/v1/admin/**
+            - Path=/api/v1/admin/seed/products/**,/api/v1/admin/seed/status
+          filters:
+            - AdminAuth
+        - id: admin-order-routes
+          uri: ${order.service.base-url}
+          predicates:
+            - Path=/api/v1/admin/seed/orders/**
+          filters:
+            - AdminAuth
+        - id: admin-payment-routes
+          uri: ${payment.service.base-url}
+          predicates:
+            - Path=/api/v1/admin/seed/payments/**
           filters:
             - AdminAuth
 
@@ -40,6 +56,10 @@ product:
 order:
   service:
     base-url: http://localhost:8082
+
+payment:
+  service:
+    base-url: http://localhost:8083
 
 app:
   admin:
